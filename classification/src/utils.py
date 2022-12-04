@@ -57,6 +57,7 @@ def create_logger(
 
     if time_zone:
         from pytz import timezone, utc
+
         def time_formatter(*args):
             # TODO: Doesnt work with rich formatter
             utc_dt = utc.localize(datetime.datetime.utcnow())
@@ -68,6 +69,7 @@ def create_logger(
 
     if rich_logging:
         from rich.logging import RichHandler
+
         stream_format = f"{project_name}:%(module)s:%(funcName)s: %(message)s"
         stream_handler = RichHandler(omit_repeated_times=False)
     else:
