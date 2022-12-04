@@ -1,6 +1,6 @@
 FROM amazon/aws-lambda-python
 
-WORKDIR /inference
+# WORKDIR /inference
 
 ARG MODEL_DIR=./models
 
@@ -18,6 +18,6 @@ COPY ./ ./
 # Run test cases and this saves the transformer model in the container
 RUN pip install pytest --no-cache-dir && pytest tests -s -vv
 
-RUN chmod -R 777 /inference
+RUN chmod -R 777 ${MODEL_DIR}
 
 CMD [ "main.lambda_handler"]
