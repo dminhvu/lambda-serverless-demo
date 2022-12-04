@@ -2,7 +2,7 @@ FROM amazon/aws-lambda-python
 
 # WORKDIR /inference
 
-ARG MODEL_DIR=./models
+ARG MODEL_DIR=/tmp/models
 
 ENV TRANSFORMERS_CACHE=$MODEL_DIR
 ENV TRANSFORMERS_VERBOSITY=error
