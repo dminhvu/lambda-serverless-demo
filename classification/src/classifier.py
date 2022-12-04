@@ -3,16 +3,24 @@ from functools import lru_cache
 
 warnings.filterwarnings("ignore")
 
-from transformers import (AutoConfig, AutoModelForSequenceClassification,
-                          AutoTokenizer, pipeline)
+from transformers import (
+    AutoConfig,
+    AutoModelForSequenceClassification,
+    AutoTokenizer,
+    pipeline,
+)
 
 from src import config, utils
 
 logger = utils.create_logger(project_name=config.PREDICTION_TYPE, level="INFO")
 
+
 class Classifier:
     def __init__(self):
-        _ = self.get_sentiment_pipeline(model_name=config.DEFAULT_MODEL_NAME, tokenizer_name=config.DEFAULT_TOKENIZER_NAME) #warm up
+        _ = self.get_sentiment_pipeline(
+            model_name=config.DEFAULT_MODEL_NAME,
+            tokenizer_name=config.DEFAULT_TOKENIZER_NAME,
+        )  # warm up
 
     @staticmethod
     @lru_cache(maxsize=config.CACHE_MAXSIZE)
@@ -50,15 +58,15 @@ class Classifier:
 
         Returns:
             str: clean text
-        """        
+        """
         return text.strip().lower()
 
-    def __call__(self, request: dict)-> dict:
+    def __call__(self, request: dict) -> dict:
         """Predict the sentiment of the given texts
-        
+
         Args:
-            request (dict): request containing the list of text to predict the sentiment 
-        
+            request (dict): request containing the list of text to predict the sentiment
+
         Returns:
             dict: classes of the given text
         """
@@ -66,16 +74,14 @@ class Classifier:
 
         model_name = request.get("model_name", config.DEFAULT_MODEL_NAME)
         tokenizer_name = request.get("tokenizer_name", config.DEFAULT_TOKENIZER_NAME)
-        
+
         logger.info(f"Predicting sentiment for {len(texts)} texts")
-        classification_pipeline = self.get_sentiment_pipeline(model_name, tokenizer_name)
+        classification_pipeline = self.get_sentiment_pipeline(
+            model_name, tokenizer_name
+        )
 
         predictions = classification_pipeline(texts)
         for i, pred in enumerate(predictions):
             predictions[i]["score"] = round(pred["score"], 2)
 
-        return {
-            "predictions": predictions
-        }
-
-    
+        return {"predictions": predictions}
